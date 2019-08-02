@@ -21,8 +21,10 @@ public:
 	virtual double get_PID_control_output(void);			 //获取PID运算结果
 	void SET_Intergral_Limter(bool FLAG);			 //积分限幅器控制接口
 	void SET_Intergral_Separater(bool FLAG);		 //积分分离器控制接口
+	void SET_D_Incompleter(bool FLAG);
 	void SET_Limit_val(double limit_val_t);			 //设定积分限幅的值
 	void SET_ERR_Limit_val(double err_limit_val_t);  //设定积分分离阈值
+	void SET_Alpha(double alpha_t);
 protected:
 	double p;								  //P
 	double i;								  //I
@@ -37,15 +39,7 @@ protected:
 	bool Intergral_separate_Flag;			  //积分分离器启动标志位
 	double err_limit_val;					  //误差限制值
 	double Intergral_separate_Actuator;       //不要动！！！
-};
-class PID_D_Incomplete :public PID
-{
-public:
-	PID_D_Incomplete(double p_t, double i_t, double d_t);
-	PID_D_Incomplete(PID_D_Incomplete& pid);
-	~PID_D_Incomplete(void);
-	virtual double get_PID_control_output(void);			 //获取PID运算结果
-protected:
+	bool D_Incomplete_Flag;                   //不完全微分控制器
 	double alpha;
 	double lastdev;
 };
