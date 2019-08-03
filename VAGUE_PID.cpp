@@ -23,9 +23,12 @@ int deltaKdMatrix[7][7] = { {PS,NS,NB,NB,NB,NM,PS},
 						 {ZO,ZO,ZO,ZO,ZO,ZO,ZO},
 						 {PB,NS,PS,PS,PS,PS,PB},
 						 {PB,PM,PM,PM,PS,PS,PB} };
-VAGUE_PID::VAGUE_PID(PID& pid_source,double emax_t,double de_max_t,double delta_Kp_max_t,double delta_Ki_max_t,double delta_Kd_max_t)  //调试好的PID参数
+VAGUE_PID::VAGUE_PID(PID& pid_source,double emax_t,double de_max_t,double delta_Kp_max_t,double delta_Ki_max_t,double delta_Kd_max_t, double KP_MAX_T, double KI_MAX_T, double KD_MAX_T)  //调试好的PID参数
 {
 	int i = 0, j = 0;
+	KpMAX = KP_MAX_T;
+	KdMAX = KD_MAX_T;
+	KiMAX = KI_MAX_T;
 	Kp = pid_source.get_p();
 	Kd = pid_source.get_d();
 	Ki = pid_source.get_i();
@@ -34,8 +37,8 @@ VAGUE_PID::VAGUE_PID(PID& pid_source,double emax_t,double de_max_t,double delta_
 	C = Kd;
 	emax = emax_t;
 	demax = de_max_t;
-	Ke = (N / 2.0) / emax;
-	Kde = (N / 2.0) / demax;
+	Ke = (N / 2) / emax;
+	Kde = (N / 2) / demax;
 	delta_Kp_MAX = delta_Kp_max_t;
 	delta_Ki_MAX = delta_Ki_max_t;
 	delta_Kd_MAX = delta_Kd_max_t;
@@ -82,7 +85,7 @@ VAGUE_PID::~VAGUE_PID(void)
 	delete Ki_mf_paras;
 	delete Kd_mf_paras;
 }
-void VAGUE_PID::SETRuleMatrix(int **kp_m, int **ki_m, int **kd_m)
+void VAGUE_PID::SETRuleMatrix(int kp_m[N][N], int ki_m[N][N], int kd_m[N][N])
 {
 	for (int i = 0; i < N; i++)
 		for (int j = 0; j < N; j++)
@@ -202,7 +205,7 @@ void VAGUE_PID::setMf_sub(TYPE type, double* paras, TYPE_MODE n)
 }
 double VAGUE_PID::Get_VAGUE_PID_OUTPUT(void)
 {
-	double u_e[N], u_de[N];
+	double u_e[N], u_de[N],u_u[N];
 	int u_e_index[3], u_de_index[3];//假设一个输入最多激活3个模糊子集
 	double delta_Kp, delta_Ki, delta_Kd;
 	err = goalval - realval;
@@ -252,7 +255,8 @@ double VAGUE_PID::Get_VAGUE_PID_OUTPUT(void)
 	else if (delta_Kp <= -delta_Kp_MAX) delta_Kp = -delta_Kp_MAX;
 	Kp += delta_Kp;
 	if (Kp < 0)Kp = 0;
-
+	else if (Kp > KpMAX)
+		Kp = KpMAX;
 	/*计算delta_Ki和Ki*/
 	den = 0; num = 0;
 	for (int m = 0; m < 3; m++)
@@ -268,6 +272,8 @@ double VAGUE_PID::Get_VAGUE_PID_OUTPUT(void)
 	else if (delta_Ki <= -delta_Ki_MAX)  delta_Ki = -delta_Ki_MAX;
 	Ki += delta_Ki;
 	if (Ki < 0)Ki = 0;
+	else if (Ki > KiMAX)
+		Ki = KiMAX;
 	/*计算delta_Kd和Kd*/
 	den = 0; num = 0;
 	for (int m = 0; m < 3; m++)
@@ -282,15 +288,17 @@ double VAGUE_PID::Get_VAGUE_PID_OUTPUT(void)
 	else if (delta_Kd <= -delta_Kd_MAX) delta_Kd = -delta_Kd_MAX;
 	Kd += delta_Kd;
 	if (Kd < 0)Kd = 0;
+	else if (Kd > KdMAX)
+		Kd = KdMAX;
 	A = Kp + Ki + Kd;
 	B = -2 * Kd - Kp;
 	C = Kd;
 	output = A * err + B * lasterr + C * preerr;
 	result = output / Ke;
-	if (result >= 0.95 * goalval)
-		result = 0.95 * goalval;
-	else if (result <= -0.95 * (goalval))
-		result = -0.95 * goalval;
+	//if (result >= 0.95 * goalval)
+	//	result = 0.95 * goalval;
+	//else if (result <= -0.95 * (goalval))
+	//	result = -0.95 * goalval;
 	preerr = lasterr;
 	lasterr = err;
 

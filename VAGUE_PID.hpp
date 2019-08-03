@@ -9,12 +9,20 @@ typedef int TYPE_MODE;
 class VAGUE_PID
 {
 public:
-	VAGUE_PID(PID &pid_t,double emax_t, double de_max_t,double delta_Kp_max_t, double delta_Ki_max_t, double delta_Kd_max_t);  //训练好的PID
+	VAGUE_PID(PID &pid_t,double emax_t, double de_max_t,double delta_Kp_max_t, double delta_Ki_max_t, double delta_Kd_max_t,double KP_MAX_T,double KI_MAX_T,double KD_MAX_T);  //训练好的PID
 	~VAGUE_PID(void);
-	void SETRuleMatrix(int** kp_m, int** ki_m, int** kd_m);
+	void SETRuleMatrix(int kp_m[N][N], int ki_m[N][N], int kd_m[N][N]);
 	void setMf_sub(TYPE type, double* paras, TYPE_MODE n);
 	double Get_VAGUE_PID_OUTPUT(void);
-	
+	void SET_Goal_Val(double goalval_t)
+	{
+		goalval = goalval_t;
+	}
+	void UPDATE_REAL_DATA(double realval_t)
+	{
+		realval = realval_t;
+	}
+	void showInfo(void);
 protected:
 	double goalval;
 	double realval;
@@ -40,6 +48,9 @@ protected:
 	double delta_Kp_MAX;
 	double delta_Ki_MAX;
 	double delta_Kd_MAX;
+	double KpMAX;
+	double KiMAX;
+	double KdMAX;
 	double A;
 	double B;
 	double C;
@@ -56,7 +67,6 @@ private:
 	double emax;
 	double demax;
 	void showMf(TYPE type, double* mf_paras);
-	void showInfo(void);
 };
 enum VAGUE_GROUP
 {
@@ -70,7 +80,7 @@ enum VAGUE_GROUP
 };
 enum TYPE_GROUP_FOR_KPKIKD
 {
-	TYPE_ERR = 1,
+	TYPE_ERR = 0,
 	TYPE_DE,
 	TYPE_KP,
 	TYPE_KI,
