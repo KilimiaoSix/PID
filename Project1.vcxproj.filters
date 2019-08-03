@@ -21,9 +21,21 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="VAGUE_PID.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="mymath.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PID.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="VAGUE_PID.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="mymath.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

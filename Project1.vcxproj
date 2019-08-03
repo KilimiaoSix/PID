@@ -124,10 +124,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mymath.cpp" />
     <ClCompile Include="PID.cpp" />
+    <ClCompile Include="VAGUE_PID.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="mymath.hpp" />
     <ClInclude Include="PID.hpp" />
+    <ClInclude Include="VAGUE_PID.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
