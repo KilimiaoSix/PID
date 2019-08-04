@@ -23,6 +23,11 @@ int deltaKdMatrix[7][7] = { {PS,NS,NB,NB,NB,NM,PS},
 						 {ZO,ZO,ZO,ZO,ZO,ZO,ZO},
 						 {PB,NS,PS,PS,PS,PS,PB},
 						 {PB,PM,PM,PM,PS,PS,PB} };
+double e_mf_paras[] = { -3,-3,-2,-3,-2,-1,-2,-1,0,-1,0,1,0,1,2,1,2,3,2,3,3 };
+double de_mf_paras[] = { -3,-3,-2,-3,-2,-1,-2,-1,0,-1,0,1,0,1,2,1,2,3,2,3,3 };
+double Kp_mf_paras[] = { -3,-3,-2,-3,-2,-1,-2,-1,0,-1,0,1,0,1,2,1,2,3,2,3,3 };
+double Ki_mf_paras[] = { -3,-3,-2,-3,-2,-1,-2,-1,0,-1,0,1,0,1,2,1,2,3,2,3,3 };
+double Kd_mf_paras[] = { -3,-3,-2,-3,-2,-1,-2,-1,0,-1,0,1,0,1,2,1,2,3,2,3,3 };
 VAGUE_PID::VAGUE_PID(PID& pid_source,double emax_t,double de_max_t,double delta_Kp_max_t,double delta_Ki_max_t,double delta_Kd_max_t, double KP_MAX_T, double KI_MAX_T, double KD_MAX_T)  //调试好的PID参数
 {
 	int i = 0, j = 0;
@@ -71,10 +76,6 @@ VAGUE_PID::VAGUE_PID(PID& pid_source,double emax_t,double de_max_t,double delta_
 			Ki_rule_matrix[i][j] = 0;
 			Kd_rule_matrix[i][j] = 0;
 		}
-	}
-	for (i = 0; i < 2; i++)
-	{
-		qValue[i] = 0;
 	}
 }
 VAGUE_PID::~VAGUE_PID(void)
@@ -205,7 +206,7 @@ void VAGUE_PID::setMf_sub(TYPE type, double* paras, TYPE_MODE n)
 }
 double VAGUE_PID::Get_VAGUE_PID_OUTPUT(void)
 {
-	double u_e[N], u_de[N],u_u[N];
+	double u_e[N], u_de[N];
 	int u_e_index[3], u_de_index[3];//假设一个输入最多激活3个模糊子集
 	double delta_Kp, delta_Ki, delta_Kd;
 	err = goalval - realval;

@@ -18,6 +18,16 @@
 //		cout << "output: " <<  setiosflags(ios::fixed) << setprecision(3) << output << endl;
 //	}
 //}
+/*
+使用方法：先创建一个PID对象，保证可以正常使用之后
+		  创建VAGUE_PID对象，设置ERR最大值，DERR最大值，PID三系数增量最大值，PID三项最大值
+		  之后设置规则矩阵，使用在VAGUE_PID.hpp里面创建好的数组即可
+		   设置模糊规则矩阵，使用VAGUE_PID.hpp里面创建好的即可
+		  之后调用UPDATE_REAL_DATA函数更新实际数据，调用Get_VAGUE_PID_OUTPUT函数获取输出数据
+		  如果想更换目标值，调用SET_Goal_Val函数即可
+		  main函数内为使用实例
+		  需要调试参数几乎没有~
+*/
 int main(void)
 {
 	double realval = 0;
